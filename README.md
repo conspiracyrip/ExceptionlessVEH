@@ -14,11 +14,11 @@ void __noreturn KiUserExceptionDispatcher()
   void *retaddr; // [rsp+0h] [rbp+0h] BYREF
 
   if ( Wow64PrepareForException ) // <- swap this pointer out to our own
-   // thus get called with same args as RtlDispatchException, which is PEXCEPTION_RECORD, see where im going with this?
+   // thus get called with same args as RtlDispatchException, which is PEXCEPTION_RECORD
     Wow64PrepareForException(&STACK[0x4F0], &retaddr); // <- swap this pointer out to our own
  
   // code execution before RtlDispatchException.!
-
+  // thus install our own handler, so we can get called with RtlGuardRestoreContext, rather than crashing <3
   if ( (unsigned __int8)RtlDispatchException(&STACK[0x4F0], &retaddr) )
   {
     RtlGuardRestoreContext((PCONTEXT)&retaddr, 0i64);
